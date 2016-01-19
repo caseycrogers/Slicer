@@ -17,4 +17,4 @@ In Fusion, open the "Scripts and Add-Ins" tool. Press the green plus sign in the
 + Combine all the layers into a single body to reduce clutter
 
 # Known Bugs (working on fixes)
-+ Hollow cavities in the original body will be filled up
++ In some cases where there are several profiles in a single layer some of the profiles won't be extruded
