@@ -1,0 +1,10 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"script",
+	"author":	"",
+	"description":	{
+		"":	"Takes a body and Voxelizes it with the given parameters"
+	},
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
