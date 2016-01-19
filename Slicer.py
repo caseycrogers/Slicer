@@ -39,6 +39,7 @@ def slice(layerHeight, body):
     if yn != 0:
         exit()
 
+    body.isVisible = False
     while currHeight < stopHeight:
         # Create a plane at the middle of the current layer height
         inputPlane = planes.createInput()
@@ -69,14 +70,14 @@ def slice(layerHeight, body):
             if not firstBody:
                 firstBody = body
             layerBodies.add(body)"""
-
+        adsk.doEvents()
+        app.activeViewport.refresh()
         currHeight += layerHeight
     """combInput = combines.createInput(firstBody, layerBodies)
     combines.add(combInput)"""
     endIndex = timeline.markerPosition
     if startIndex != endIndex:
         timeline.timelineGroups.add(startIndex, endIndex-1)
-    body.isVisible = False
 
 
 """HELPER FUNCTIONS"""
