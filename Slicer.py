@@ -37,7 +37,7 @@ def slice(layerHeight, body):
     numLayers = int((stopHeight-startHeight)//layerHeight)
     yn = ui.messageBox("%i layers, continue?" % (numLayers), "Slicer", 1)
     if yn != 0:
-        exit()
+        return
 
     body.isVisible = False
     while currHeight < stopHeight:
