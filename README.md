@@ -9,12 +9,12 @@ Download this Github Repository by clicking "Download As ZIP" or by using "git p
 In Fusion, open the "Scripts and Add-Ins" tool. Press the green plus sign in the scripts tab and navigate to "Slicer.py". From the scripts and add-ins menu, select Slicer and click "run". The program's inputs should be self-explanatory. \s\s
 
 # Current Features
-+Slice a body
++ Slice a body
 
 # Planned Features
-+Support y-up orientation (but really, please go change your preferences to "z-up" right now)
-+Optional rounding applied to the layers to give a more realistic effect
-+Combine all the layers into a single body to reduce clutter
++ Support y-up orientation (but really, please go change your preferences to "z-up" right now)
++ Optional rounding applied to the layers to give a more realistic effect
++ Combine all the layers into a single body to reduce clutter
 
 # Known Bugs (working on fixes)
-+Hollow cavities in the original body will be filled up
++ Hollow cavities in the original body will be filled up
