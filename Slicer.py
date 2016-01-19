@@ -59,7 +59,7 @@ def slice(layerHeight, body):
         # Extrude all the profiles in the sketch to build a layer
         profiles = adsk.core.ObjectCollection.create()
         for profile in sketch.profiles:
-            if intersects(profile, body):
+            if intersects(profile, sketch.profiles):
                 profiles.add(profile)
         extInput = extrudes.createInput(profiles, \
         adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
@@ -81,10 +81,21 @@ def slice(layerHeight, body):
 
 
 """HELPER FUNCTIONS"""
-# Returns True if profile intersects with body
-def intersects(profile, body):
-    return True
 
+""" Returns true if a profile created by an intersect represents positive space.
+    Takes in one profile and a collection of all the profiles created by
+    an intersect"""
+def intersects(profile, profiles):
+    # Start at -1 bec
+    numInterior = 0
+    for prof in profiles:
+        if interior(profile.boundingBox, prof.boundingBox):
+            numInterior += 1
+    return (numInterior % 2) == 0
+
+def interior(bBox1, bBox2):
+    return bBox1.minPoint.x > bBox2.minPoint.x and \
+    bBox1.maxPoint.x < bBox2.maxPoint.x
 
 
 """ REALLY ANNOYING USER INTERFACE SETUP STUFF"""
