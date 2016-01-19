@@ -12,7 +12,7 @@ Current Features
 Slice a body
 
 Planned Features
-Support y-up orientation (but really, please go change your preferences to "z-up" right now
+Support y-up orientation (but really, please go change your preferences to "z-up" right now)
 Optional rounding applied to the layers to give a more realistic effect
 Combine all the layers into a single body to reduce clutter
 
