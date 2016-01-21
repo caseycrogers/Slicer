@@ -1,6 +1,9 @@
 # Slicer
 This is a very early version of Slicer. Slicer is a Fusion 360 script that chops a body into layers. This makes your design look like it was 3D printed and lets you make some pretty cool looking renders.
 
+# Attributions:
+Includes helper functions written by Kris Kaplan
+
 ## NOTE:
 Currently Slice only works in designs that are set to "z-up". I will add support for the default "y-up" setting in the near future, but for now you can change Fusion to "z-up" in the preferences menu (will only apply to designs made AFTER the setting was changed). I strongly encourage you to use "z-up" as that is the standard used by most 3D software (including slicers for 3D printing).
 
@@ -17,4 +20,3 @@ In Fusion, open the "Scripts and Add-Ins" tool. Press the green plus sign in the
 + Combine all the layers into a single body to reduce clutter
 
 # Known Bugs (working on fixes)
-+ In some cases where there are several profiles in a single layer some of the profiles won't be extruded

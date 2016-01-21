@@ -57,11 +57,11 @@ def slice(layerHeight, body):
             continue
         
         # Extrude all the profiles in the sketch to build a layer
-        profiles = adsk.core.ObjectCollection.create()
-        for profile in sketch.profiles:
-            if intersects(profile, sketch.profiles):
-                profiles.add(profile)
-        extInput = extrudes.createInput(profiles, \
+        extProfiles = adsk.core.ObjectCollection.create()
+        positiveSpaceProfiles = findPositiveProfiles(sketch.profiles)
+        for profile in positiveSpaceProfiles:
+            extProfiles.add(profile)
+        extInput = extrudes.createInput(extProfiles, \
         adsk.fusion.FeatureOperations.NewBodyFeatureOperation)
         extInput.setTwoSidesDistanceExtent(dist, dist)
         
@@ -84,9 +84,9 @@ def slice(layerHeight, body):
 
 """ Returns true if a profile created by an intersect represents positive space.
     Takes in one profile and a collection of all the profiles created by
-    an intersect"""
+    an intersect
+    Depricated, replaced by profileSketchEntities"""
 def intersects(profile, profiles):
-    # Start at -1 bec
     numInterior = 0
     for prof in profiles:
         if interior(profile.boundingBox, prof.boundingBox):
@@ -96,6 +96,81 @@ def intersects(profile, profiles):
 def interior(bBox1, bBox2):
     return bBox1.minPoint.x > bBox2.minPoint.x and \
     bBox1.maxPoint.x < bBox2.maxPoint.x
+
+"""KRAZY CODE BY KRIS KAPLAN"""
+def profileLoopSketchEntities(profileLoop):
+    entities = []
+    for profileCurve in profileLoop.profileCurves:
+        if not profileCurve.sketchEntity in entities:
+            entities.append(profileCurve.sketchEntity)
+    return entities
+
+def profileLoopsEqual(profileLoop1, profileLoop2):
+    # simple compare of sketch entities only.  More rigorous would be comparing all curve geometry.
+    entities1 = profileLoopSketchEntities(profileLoop1)
+    entities2 = profileLoopSketchEntities(profileLoop2)
+    for ent in entities1:
+        if not ent in entities2:
+            return False
+    return len(entities1) == len(entities2)
+
+def findPositiveProfiles(profiles):
+    unclassifiedOuterLoops = []
+    unclassifiedInnerLoops = []
+    for profile in profiles:
+        for loop in profile.profileLoops:
+            if loop.isOuter:
+                unclassifiedOuterLoops.append(loop)
+            else:
+                unclassifiedInnerLoops.append(loop)
+
+    positiveSpaceProfiles = []
+    positiveSpaceInnerLoops = []
+    negativeSpaceInnerLoops = []
+    progressMade = True
+    firstPass = True
+    while progressMade and unclassifiedOuterLoops:
+        progressMade = False
+        loopsToRemove = []
+        for thisLoop in unclassifiedOuterLoops:
+            isPositive = False
+            isNegative = False
+            if firstPass:
+                # search for absolute outer profiles
+                isPositive = True
+                for otherLoop in unclassifiedInnerLoops:
+                    if profileLoopsEqual(thisLoop, otherLoop):
+                        isPositive = False
+                        break
+            else:                    
+                for otherLoop in negativeSpaceInnerLoops:
+                    if profileLoopsEqual(thisLoop, otherLoop):
+                        isPositive = True
+                        break
+                if not isPositive:
+                    for otherLoop in positiveSpaceInnerLoops:
+                        if profileLoopsEqual(thisLoop, otherLoop):
+                            isNegative = True
+                            break
+                        
+            if isPositive:
+                positiveSpaceProfiles.append(thisLoop.parentProfile)
+                loopsToRemove.append(thisLoop)
+                for loop in thisLoop.parentProfile.profileLoops:
+                    if not loop.isOuter:
+                        positiveSpaceInnerLoops.append(loop)
+                progressMade = True
+            elif isNegative:
+                loopsToRemove.append(thisLoop)
+                for loop in thisLoop.parentProfile.profileLoops:
+                    if not loop.isOuter:
+                        negativeSpaceInnerLoops.append(loop)
+                progressMade = True
+        firstPass = False
+        for loop in loopsToRemove:
+            unclassifiedOuterLoops.remove(loop)
+    assert not unclassifiedOuterLoops
+    return positiveSpaceProfiles
 
 
 """ REALLY ANNOYING USER INTERFACE SETUP STUFF"""
